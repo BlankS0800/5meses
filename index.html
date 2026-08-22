@@ -689,6 +689,8 @@
     // Generar corazones y estrellas flotantes de fondo
     function createDoodles() {
       const container = document.getElementById('bgDoodles');
+      if (!container) return;
+      
       const symbols = ['⭐', '🩷', '✨', '🐸', '🩷'];
       const count = 28;
 
@@ -722,45 +724,54 @@
       nodes.forEach(node => observer.observe(node));
     }
 
-    // Scroll to Top Button
-    document.getElementById('scrollTopBtn').addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-
-    // Pequeño efecto al hacer clic en el botón de música
+    // Control de música
     const music = document.getElementById('bgMusic');
-const musicBtn = document.getElementById('musicBtn');
-let isPlaying = false;
+    const musicBtn = document.getElementById('musicBtn');
+    let isPlaying = false;
 
-function toggleMusic() {
-  if (isPlaying) {
-    music.pause();
-    musicBtn.innerHTML = '<span class="music-icon-pulse">⏸️</span><span>Música pausada</span>';
-    isPlaying = false;
-  } else {
-    music.play().then(() => {
-      musicBtn.innerHTML = '<span class="music-icon-pulse">🩷🎵</span><span>YOKO</span>';
-      isPlaying = true;
-    }).catch(err => console.log('Interacción requerida para reproducir'));
-  }
-}
+    function toggleMusic() {
+      if (!music || !musicBtn) return;
 
-// Control al pulsar el botón flotante
-musicBtn.addEventListener('click', (e) => {
-  e.stopPropagation();
-  toggleMusic();
-});
+      if (isPlaying) {
+        music.pause();
+        musicBtn.innerHTML = '<span class="music-icon-pulse">⏸️</span><span>Música pausada</span>';
+        isPlaying = false;
+      } else {
+        music.play().then(() => {
+          musicBtn.innerHTML = '<span class="music-icon-pulse">🩷🎵</span><span>YOKO</span>';
+          isPlaying = true;
+        }).catch(err => {
+          console.warn('Interacción requerida por el navegador para reproducir audio:', err);
+        });
+      }
+    }
 
-// Auto-reproducir al dar el primer toque/clic en cualquier parte de la página
-document.addEventListener('click', () => {
-  if (!isPlaying) {
-    toggleMusic();
-  }
-}, { once: true });
+    if (musicBtn) {
+      musicBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleMusic();
+      });
+    }
 
+    // Auto-reproducir al dar el primer toque/clic en cualquier parte de la página
+    document.addEventListener('click', () => {
+      if (!isPlaying) {
+        toggleMusic();
+      }
+    }, { once: true });
+
+    // Inicialización al cargar el DOM
     window.addEventListener('DOMContentLoaded', () => {
       createDoodles();
       setupScrollObserver();
+
+      // Listener seguro por si vuelves a agregar el botón de scroll arriba
+      const scrollTopBtn = document.getElementById('scrollTopBtn');
+      if (scrollTopBtn) {
+        scrollTopBtn.addEventListener('click', () => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
     });
   </script>
 </body>
