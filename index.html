@@ -686,7 +686,6 @@
   </main>
 
   <script>
-    // Generar corazones y estrellas flotantes de fondo
     function createDoodles() {
       const container = document.getElementById('bgDoodles');
       if (!container) return;
@@ -707,7 +706,6 @@
       }
     }
 
-    // Animación de aparición al hacer Scroll (Intersection Observer)
     function setupScrollObserver() {
       const nodes = document.querySelectorAll('.month-node');
       const observer = new IntersectionObserver((entries) => {
@@ -724,7 +722,6 @@
       nodes.forEach(node => observer.observe(node));
     }
 
-    // Control de música
     const music = document.getElementById('bgMusic');
     const musicBtn = document.getElementById('musicBtn');
     let isPlaying = false;
@@ -741,7 +738,7 @@
           musicBtn.innerHTML = '<span class="music-icon-pulse">🩷🎵</span><span>YOKO</span>';
           isPlaying = true;
         }).catch(err => {
-          console.warn('Interacción requerida por el navegador para reproducir audio:', err);
+          console.warn('Interacción requerida para reproducir audio:', err);
         });
       }
     }
@@ -753,25 +750,23 @@
       });
     }
 
-    // Auto-reproducir al dar el primer toque/clic en cualquier parte de la página
     document.addEventListener('click', () => {
       if (!isPlaying) {
         toggleMusic();
       }
     }, { once: true });
 
-    // Inicialización al cargar el DOM
+    // Listener opcional protegido contra null
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+    if (scrollTopBtn) {
+      scrollTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       createDoodles();
       setupScrollObserver();
-
-      // Listener seguro por si vuelves a agregar el botón de scroll arriba
-      const scrollTopBtn = document.getElementById('scrollTopBtn');
-      if (scrollTopBtn) {
-        scrollTopBtn.addEventListener('click', () => {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-      }
     });
   </script>
 </body>
